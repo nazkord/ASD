@@ -1,6 +1,7 @@
 #include <iostream>
+#include <cmath>
 
-const int N = 6;
+const int N = 10;
 
 struct node {
     int group;
@@ -42,23 +43,28 @@ int distanceToIdeal(node * head) {
     printOutArray(A);
     printOutArray(B);
 
-    /* //second step
+    /// second step
     counterA = 0;
     counterB = 0;
     int mainCounter = 0;
 
     while(counterA < N/2) {
-        if(A[counterA++] > N/2) {
-            while(counterB < N/2) {
-                if(B[counterB++] <= N/2)
-                    mainCounter = mainCounter + (B[counterB] - A[counterA])*2;
+        bool flag = false;
+        if(A[counterA] > N/2) {
+            while(counterB < N/2 && !flag) {
+                if(B[counterB] <= N/2) {
+                    mainCounter = mainCounter + abs(B[counterB] - A[counterA]) * 2;
+                    flag = true;
+                }
+                counterB++;
             }
         }
+        counterA++;
     }
 
-    return mainCounter;*/
+    return mainCounter;
 
-    return  0;
+    //return  0;
 }
 
 
