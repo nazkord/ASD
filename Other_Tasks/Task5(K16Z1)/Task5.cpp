@@ -16,6 +16,12 @@ void printOut(node * A[100]) {
     }
 }
 
+void insertionSortList(node *A[100], int i) {
+    node * head = A[i];
+
+
+}
+
 void sort(node * head) {
 
     // declare auxiliary variable for head
@@ -27,6 +33,7 @@ void sort(node * head) {
     for(int i = 0; i < 100; i++)
         A[i] = nullptr;
 
+    // fill each bucket of particular numbers
     while(phead != nullptr) {
         node * tmp = new node;
         tmp -> value = phead -> value;
@@ -35,7 +42,12 @@ void sort(node * head) {
         phead = phead -> next;
     }
 
-    printOut(A);
+    for(int i = 0; i < 100; i++) {
+        if(A[i] != nullptr)
+            insertionSortList(A,i);
+    }
+
+
 }
 
 int main() {
