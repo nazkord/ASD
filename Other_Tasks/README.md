@@ -3,7 +3,7 @@
 Napisac program, który stwierdza czy istnieją indeksy i oraz j,
 takie ze A[i]+A[j]=x (powinno działać w czasie O(N))
 2. Algorithm Hoare'a.
-5. Dana jestr struktura opisująca listę jednokierunkową dla liczb rzeczywistych:
+5. (5!) Dana jestr struktura opisująca listę jednokierunkową dla liczb rzeczywistych:
 struct Node{ Node* next; double value; }
 Proszę zaimplementować funkcję void Sort( Node* list ), która otrzymuje na wejściu listę
 liczb rzeczywistych (z wartownikiem), wygenerowaną zgodnie z rozkładem jednostajnym na
