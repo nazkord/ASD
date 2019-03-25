@@ -19,3 +19,5 @@ tablicy znajdywałyby się na pozycjach o indeksach od from do to (włącznie). 
 liczby w tablicy T są parami różne (ale nie można przyjmować żadnego innego rozkładu danych).
 Zaimplementowana funkcja powinna być możliwie jak najszybsza. Proszę oszacować jej złożoność
 czasową (oraz bardzo krótko uzasadnić to oszacowanie).
+7. Napisać funkcję: void sortString(string A[]); Funkcja sortuje tablicę n stringów różnej
+długości. Można założyć, że stringi składają się wyłącznie z małych liter alfabetu łacińskiego
