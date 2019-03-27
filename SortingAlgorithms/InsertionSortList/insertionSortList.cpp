@@ -17,33 +17,39 @@ void printOutList(node * first) {
     std::cout << "\n";
 }
 
-void insertionToResult(node * &head, node * inserted) {
+void insertionToResult(node * &headOfResult, node * inserted) {
 
 
-    /// option when we should insert before head or list is empty
-    if(head == nullptr || head -> value >= inserted->value) {
-        inserted -> next = head;
-        head = inserted;
+    /// option when we should insert before head
+    if(headOfResult -> value >= inserted->value) {
+        inserted -> next = headOfResult;
+        headOfResult = inserted;
     } else {
 
-        node *tmp = head;
-        while (tmp->next != nullptr && tmp->next->value < inserted->value) {
-            tmp = tmp->next;
+        /// pointer for traversing through the list
+        node *p = headOfResult;
+        while (p->next != nullptr && p->next->value < inserted->value) {
+            p = p->next;
         }
         /// insert the node
-        inserted->next = tmp->next;
-        tmp->next = inserted;
+        inserted->next = p->next;
+        p->next = inserted;
     }
     //printOutList(head);
 }
 
-void insertionSortList(node * head, node * &result) {
-    node * p = head;
-    while(p != nullptr) {
-        node * next = p -> next;
-        insertionToResult(result,p);
-        p = next;
+node * insertionSortList(node * head) {
+    node * result = new node;
+    result -> value = head -> value;
+    result -> next = nullptr;
+    while(head -> next != nullptr) {
+        node * tmp = head -> next;
+        head -> next = tmp -> next;
+        tmp -> next = nullptr;
+        insertionToResult(result,tmp);
     }
+    delete head;
+    return result;
 }
 
 int main() {
@@ -61,7 +67,7 @@ int main() {
 
     printOutList(first);
 
-    insertionSortList(first,head2);
+    head2 = insertionSortList(first);
 
     printOutList(head2);
 
