@@ -4,11 +4,11 @@
 
 /// amount of data (numbers)
 int const N = 5;
-int const size = 25;
+int const size = N*N;
 
 struct piece {
     /// index of the beggining of the piece
-    int n;
+    int index;
 
     /// sum of this piece
     int sum;
@@ -56,7 +56,7 @@ void sumSort(int A[size], int B[size]) {
 
     /// first step: traverse through array A and count the sum of particular pieces
     for(int i = 0; i < size; i+=N) {
-        headOfPieces[i/N].n = i;
+        headOfPieces[i/N].index = i;
         headOfPieces[i/N].sum = 0;
         for(int j = i; j < i + N; j++) {
             headOfPieces[i/N].sum += A[j];
@@ -67,11 +67,15 @@ void sumSort(int A[size], int B[size]) {
     quickSort(headOfPieces,0,N-1);
 
 
-    /// third step:
+    /// third step: assign numbers from pieces to final array B
 
-
-
-
+    int counterB = 0;
+    for(int i = 0; i < N; i++) {
+        int tmpIndex = headOfPieces[i].index;
+        for(int j = tmpIndex; j < tmpIndex + N; j++) {
+            B[counterB++] = A[j];
+        }
+    }
 }
 
 int main() {
@@ -91,7 +95,7 @@ int main() {
 
     sumSort(A,B);
 
-    //printOutArray(B, size);
+    printOutArray(B, size);
 
 
     return 0;
