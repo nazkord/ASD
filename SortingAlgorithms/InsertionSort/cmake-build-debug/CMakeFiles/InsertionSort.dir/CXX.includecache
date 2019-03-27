@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/nazkord/GitHub/ASD/SortingAlgorithms/InsertionSort/InsertionSort.cpp
+iostream
+-
+ctime
+-
+cstdlib
+-
+
