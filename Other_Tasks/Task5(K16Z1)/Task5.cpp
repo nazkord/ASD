@@ -13,34 +13,21 @@ void printOutList(node * first) {
     std::cout << "\n";
 }
 
-void insertionToResult(node * &head, node * inserted) {
-
-    /// option when we should insert before head or list is empty
-    if(head == nullptr || head -> value >= inserted->value) {
-        inserted -> next = head;
-        head = inserted;
+void insertionToResult(node * &headOfResult, node * inserted) {
+    /// option when we should insert before head
+    if(headOfResult == nullptr || headOfResult -> value >= inserted->value) {
+        inserted -> next = headOfResult;
+        headOfResult = inserted;
     } else {
-
-        node *tmp = head;
-        while (tmp->next != nullptr && tmp->next->value < inserted->value) {
-            tmp = tmp->next;
+        /// pointer for traversing through the list
+        node *p = headOfResult;
+        while (p->next != nullptr && p->next->value < inserted->value) {
+            p = p->next;
         }
         /// insert the node
-        inserted->next = tmp->next;
-        tmp->next = inserted;
+        inserted->next = p->next;
+        p->next = inserted;
     }
-}
-
-void insertionSortList(node * A[100], int i) {
-    node * head = A[i];
-    node * result = nullptr;
-    node * p = head;
-    while(p != nullptr) {
-        node * next = p -> next;
-        insertionToResult(result,p);
-        p = next;
-    }
-    A[i] = result;
 }
 
 void bucketSort(node * head) {
@@ -58,20 +45,17 @@ void bucketSort(node * head) {
     while(phead != nullptr) {
         node * tmp = new node;
         tmp -> value = phead -> value;
-        tmp -> next = A[(int)((phead->value)*10)];
-        A[(int)((phead->value)*10)] = tmp;
+        /// add number to bucket in sorted way
+        insertionToResult(A[(int)((phead->value)*10)], tmp);
         phead = phead -> next;
     }
 
-    /// sort each bucket using insertionSort
 
     node * traverseList = head;
     for(int i = 0; i < 100; i++) {
-        if(A[i] != nullptr) {//&& A[i] -> next != nullptr)
-            insertionSortList(A,i);
+        if(A[i] != nullptr) {
 
             /// rewriting sorted bucket into main list
-
             node * tmp = A[i];
             while(tmp != nullptr) {
                 traverseList -> value = tmp -> value;
