@@ -18,7 +18,35 @@ void printOutArray(int T[], int size) {
     for(int i = 0; i < size; i++) {
         std::cout << T[i] << " ";
     }
-    std::cout << "\n";
+    std::cout <<"\n";
+}
+
+void swap(piece T[N], int x, int y) {
+    piece tmp = T[x];
+    T[x] = T[y];
+    T[y] = tmp;
+}
+
+int partition(piece A[N], int left, int right) {
+    int pivot = A[right].sum;
+    int i = left;
+    for(int q = i; q < right; q++) {
+        if(A[q].sum <= pivot) {
+            if(q != i)
+                swap(A,i,q);
+            i++;
+        }
+    }
+    swap(A,i,right);
+    return i;
+}
+
+void quickSort(piece A[N], int i, int j) {
+    if(i < j) {
+        int pivot = partition(A,i,j);
+        quickSort(A,i,pivot - 1);
+        quickSort(A,pivot + 1,j);
+    }
 }
 
 void sumSort(int A[size], int B[size]) {
@@ -35,9 +63,15 @@ void sumSort(int A[size], int B[size]) {
         }
     }
 
-    std::cout << "SUMY: ";
-    for(int j = 0; j < N; j++)
-        std::cout << headOfPieces[j].sum << "\n";
+    /// second step: sort array of pieces by sum of those pieces
+    quickSort(headOfPieces,0,N-1);
+
+
+    /// third step:
+
+
+
+
 }
 
 int main() {
