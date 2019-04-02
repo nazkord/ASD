@@ -86,7 +86,18 @@ void deleteFromHashTable(int key) {
     //delete (rewrite) person from founded hash
     Person person;
     person.deleted = true;
+    person.occupied = false;
     hashTable[hash] = person;
+}
+
+int findAPerson(int key) {
+    for(int i = 0; i < N; i++) {
+        int hash = probingFunction(key,i);
+        // find the deleted object -> move forward
+        if(hashTable[hash].deleted) continue;
+        if(hashTable[hash].age == key) return hash;
+    }
+    return -1;
 }
 
 int main() {
@@ -99,12 +110,18 @@ int main() {
 
     printOutArray();
 
-    std::cout << "Chose and write the age of person you want to delete: "
+    std::cout << "Chose and write the age of person you want to delete: ";
     int deleteAge;
     std::cin>>deleteAge;
     deleteFromHashTable(deleteAge);
+    printOutArray();
+    std::cin>>deleteAge;
+    deleteFromHashTable(deleteAge);
+    printOutArray();
 
-
+    int findbyAge;
+    std::cin>>findbyAge;
+    std::cout << hashTable[findAPerson(findbyAge)].name;
 
 
     return 0;
