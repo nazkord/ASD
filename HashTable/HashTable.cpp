@@ -8,15 +8,25 @@ int const c = 3;
 
 int addedElement = 0;
 
-struct person {
+struct Person {
     std::string name;
-    int age = 0;
+    int age;
     bool occupied = false;
     bool deleted = false;
 };
 
 //global hashTable
-person hashTable[N];
+Person hashTable[N];
+
+// function fot creating new person with given arguments
+Person CreatePerson(std::string name, int age) {
+    Person person;
+    person.age = age;
+    person.name = name;
+    person.occupied = false;
+    person.deleted = false;
+    return person;
+}
 
 double getFillingLevel() {
     return (double)addedElement/N*100;
@@ -24,7 +34,7 @@ double getFillingLevel() {
 
 void printOutArray() {
     for(int i = 0; i < N; i++) {
-        std::cout << hashTable[i].name << hashTable[i].age << "\n";
+        std::cout << hashTable[i].name << " " << hashTable[i].age << "\n";
     }
 }
 
@@ -46,6 +56,8 @@ void insertToHashTable() {
     std::cout << "Wpisz wiek: ";
     std::cin >> keyAge;
 
+    Person person = CreatePerson(name,keyAge);
+
     //find key's hash
     int hash;
     int probe = 0;
@@ -55,10 +67,8 @@ void insertToHashTable() {
     } while(hashTable[hash].occupied);
 
     //insert
-    hashTable[hash].name = name;
-    hashTable[hash].age = keyAge;
-    hashTable[hash].occupied = true;
-
+    person.occupied = true;
+    hashTable[hash] = person;
     //change and print the level of filling
     addedElement++;
     std::cout << "Filling level is equal: " << getFillingLevel() << "%\n";
@@ -67,13 +77,16 @@ void insertToHashTable() {
 void deleteFromHashTable(int key) {
     int hash;
     int probe = 0;
-    // find hash for which key is equal to age of person
+    // find hash for which key is equal to age of Person
     do {
         hash = probingFunction(key,probe);
         probe++;
     } while(hashTable[hash].age != key);
 
-
+    //delete (rewrite) person from founded hash
+    Person person;
+    person.deleted = true;
+    hashTable[hash] = person;
 }
 
 int main() {
@@ -82,10 +95,14 @@ int main() {
 
     for(int i = 0; i < N/4*3; i++) {
         insertToHashTable();
-
     }
 
     printOutArray();
+
+    std::cout << "Chose and write the age of person you want to delete: "
+    int deleteAge;
+    std::cin>>deleteAge;
+    deleteFromHashTable(deleteAge);
 
 
 
