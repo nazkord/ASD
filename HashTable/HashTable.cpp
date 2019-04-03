@@ -1,127 +1,174 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <unistd.h>
+#include <term.h>
 
 int const N = 10;
 //some prime number to be used as a const in hashing probing
 int const c = 3;
 
-int addedElement = 0;
+int elementInHashTable = 0;
 
 struct Person {
-    std::string name;
-    int age;
+    std::string name = "";
+    int age = 0;
     bool occupied = false;
     bool deleted = false;
 };
 
-//global hashTable
-Person hashTable[N];
-
 // function fot creating new person with given arguments
 Person CreatePerson(std::string name, int age) {
     Person person;
-    person.age = age;
     person.name = name;
+    person.age = age;
     person.occupied = false;
     person.deleted = false;
     return person;
 }
 
 double getFillingLevel() {
-    return (double)addedElement/N*100;
+    return (double)elementInHashTable/N*100;
 }
 
-void printOutArray() {
-    for(int i = 0; i < N; i++) {
-        std::cout << hashTable[i].name << " " << hashTable[i].age << "\n";
+void printOutArray(Person * HashTable, int size) {
+    for(int i = 0; i < size; i++) {
+        std::cout << HashTable[i].name << " " << HashTable[i].age << "\n";
     }
 }
 
-int hashFunction(int key) {
-    return key%N;
+int hashFunction(int key, int size) {
+    return key%size;
 }
 
-int probingFunction(int key, int probe) {
-    return (hashFunction(key) + c*probe*probe)%N;
+int probingFunction(int key, int probe, int size) {
+    return (hashFunction(key,size) + c*probe*probe)%size;
 }
 
-void insertToHashTable() {
+void insertToHashTable(Person* HashTable, int size, Person person) {
 
     //take input (key) from user
-    int keyAge;
-    std::string name;
-    std::cout << "Wpisz imie: ";
-    std::cin >> name;
-    std::cout << "Wpisz wiek: ";
-    std::cin >> keyAge;
-
-    Person person = CreatePerson(name,keyAge);
-
+    int keyAge = person.age;
     //find key's hash
     int hash;
     int probe = 0;
     do {
-        hash = probingFunction(keyAge,probe);
+        hash = probingFunction(keyAge,probe,size);
         probe++;
-    } while(hashTable[hash].occupied);
+    } while(HashTable[hash].occupied);
 
     //insert
     person.occupied = true;
-    hashTable[hash] = person;
+    HashTable[hash] = person;
     //change and print the level of filling
-    addedElement++;
+    elementInHashTable++;
     std::cout << "Filling level is equal: " << getFillingLevel() << "%\n";
 }
 
-void deleteFromHashTable(int key) {
+void deleteFromHashTable(Person* HashTable, int size, int key) {
     int hash;
     int probe = 0;
     // find hash for which key is equal to age of Person
     do {
-        hash = probingFunction(key,probe);
+        hash = probingFunction(key,probe,size);
         probe++;
-    } while(hashTable[hash].age != key);
+    } while(HashTable[hash].age != key && probe != size);
 
     //delete (rewrite) person from founded hash
-    Person person;
-    person.deleted = true;
-    person.occupied = false;
-    hashTable[hash] = person;
+    if(probe != size) {
+        Person person;
+        person.deleted = true;
+        person.occupied = false;
+        HashTable[hash] = person;
+        elementInHashTable--;
+    }
 }
 
-int findAPerson(int key) {
+int findAPerson(Person * HashTable, int size, int key) {
     for(int i = 0; i < N; i++) {
-        int hash = probingFunction(key,i);
+        int hash = probingFunction(key,i,size);
         // find the deleted object -> move forward
-        if(hashTable[hash].deleted) continue;
-        if(hashTable[hash].age == key) return hash;
+        if(HashTable[hash].deleted) continue;
+        if(HashTable[hash].age == key) return hash;
     }
     return -1;
 }
 
-int main() {
-    //srand(time(nullptr));
+Person* reHashing(Person* oldHashTable, int sizeOld, Person* newHashTable, int sizeNew) {
+    std::cout << ("\n***Rehashing Started***\n");
 
-
-    for(int i = 0; i < N/4*3; i++) {
-        insertToHashTable();
+    // find a Person in "old" HashTable, make hash to and put it to "new" HashTable
+    elementInHashTable = 0;
+    for(int i = 0; i < sizeOld; i++) {
+        if(oldHashTable[i].occupied) {
+            //found a Person
+            insertToHashTable(newHashTable, sizeNew, oldHashTable[i]);
+        }
     }
+    return newHashTable;
+}
 
-    printOutArray();
+void console(Person* usedHashTable, int size) {
+    bool flag = false;
+    while(!flag) {
+        int input;
+        std::cout << "Delete element -> press 1: \n";
+        std::cout << "Find element -> press 2: \n";
+        std::cout << "Insert element -> press 3: \n";
+        std::cout << "Rehashing  -> press 4: \n";
+        std::cout << "Exit -> press not 1,2,3 \n";
+        std::cin >> input;
+        switch ( input )
+        {
+            case 1: {
+                // delete case
+                printOutArray(usedHashTable, size);
+                std::cout << "Chose and write the age of person you want to delete: ";
+                std::cin >> input;
+                deleteFromHashTable(usedHashTable, size, input);
+                printOutArray(usedHashTable, size);
+                break;
+            }
+            case 2: {
+                //find case
+                printOutArray(usedHashTable, size);
+                std::cout << "Enter the age of person you want to find: ";
+                std::cin >> input;
+                std::cout << usedHashTable[findAPerson(usedHashTable, size, input)].name << "\n";
+                break;
+            }
+            case 3: {
+                //insert case
+                std::string name;
+                int age;
+                std::cout << "Enter name: ";
+                std::cin >> name;
+                std::cout << "Enter age: ";
+                std::cin >> age;
+                Person person = CreatePerson(name,age);
+                insertToHashTable(usedHashTable, size, person);
+                printOutArray(usedHashTable, size);
+                break;
+            }
+            case 4: {
+                //rehashing case
+                flag = true;
+            }
+            default: {
+                flag = true;
+            }
+        }
 
-    std::cout << "Chose and write the age of person you want to delete: ";
-    int deleteAge;
-    std::cin>>deleteAge;
-    deleteFromHashTable(deleteAge);
-    printOutArray();
-    std::cin>>deleteAge;
-    deleteFromHashTable(deleteAge);
-    printOutArray();
+    }
+}
 
-    int findbyAge;
-    std::cin>>findbyAge;
-    std::cout << hashTable[findAPerson(findbyAge)].name;
+int main() {
+
+    Person hashTable[N];
+    console(hashTable,N);
+    Person hashTable2[2*N];
+    reHashing(hashTable,N,hashTable2,2*N);
+    console(hashTable2,2*N);
 
 
     return 0;
