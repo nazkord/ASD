@@ -10,24 +10,25 @@ struct node {
 
 
 
-/// #TODO - make parent used!
-void insertToBST(node *& p, int k) {
+void insertToBST(node * parent, node *& child, int k) {
     /// k - the value to be inserted
-    /// p - is root of the tree (in first call of insert function)
+    /// parent - is the parent of the current node (firstly null)
+    /// child - is root of the tree (in first call of insert function)
 
     /// if find empty "space" add k there
-    if(p == nullptr) {
-        p = new node;
-        p -> left = p -> right = nullptr;
-        p -> value = k;
+    if(child == nullptr) {
+        child = new node;
+        child -> left = child -> right = nullptr;
+        child -> value = k;
+        child -> parent = parent;
         return;
     }
 
     /// if k is lesser than current node value then go to left subtree, otherwise to right
-    if(k < p -> value) {
-        insertToBST(p -> left, k);
+    if(k < child -> value) {
+        insertToBST(child,child -> left, k);
     } else {
-        insertToBST(p -> right, k);
+        insertToBST(child,child -> right, k);
     }
 }
 
@@ -48,6 +49,13 @@ node * findRecursivelyInBST(node * p, int valueToFind) {
     }
 }
 
+node * findMin(node * p) {
+    while(p -> left != nullptr) {
+        p = p->left;
+    }
+    return p;
+}
+
 node * findIterativelyInBST(node * p, int valueToFind) {
     /// p - firstly root
     while(p != nullptr && p -> value != valueToFind) {
@@ -60,6 +68,25 @@ node * findIterativelyInBST(node * p, int valueToFind) {
     return p;
 }
 
+/// find the next node that will be visited by passing through in-order
+node * consequent(node * p) {
+
+    /// first possibility when node contains right subtree (son)
+    if(p -> right != nullptr) {
+        return findMin(p -> right);
+    }
+
+    /// second possibility when node doesn't have right subtree
+    /// go up through the tree and find the first node to which we came from left subtree
+    /// if q will equal to null that means p was the largest element in the tree and doesn't have next(consequent) node
+    node * q = p -> parent;
+    while(q != nullptr && q -> left != p) {
+        p = q;
+        q = q -> parent;
+    }
+    return q;
+}
+
 int main() {
     node * root = nullptr;
     int n;
@@ -69,11 +96,11 @@ int main() {
     int inputDate[12] = {9,5,15,4,7,10,18,1,6,8,12,19};
 
     for(int i = 0; i < n; i++) {
-        insertToBST(root,inputDate[i]);
+        insertToBST(nullptr, root, inputDate[i]);
     }
 
-    node * tmp = findRecursivelyInBST(root, 18);
-    if(tmp -> right ->value == 193)
+    node * tmp = findRecursivelyInBST(root, 1);
+    if(tmp -> parent ->value == 4)
         std::cout << "TAK TAK TAAK";
 
     return 0;
