@@ -7,9 +7,6 @@ struct node {
     int value;
 };
 
-
-
-
 void insertToBST(node * parent, node *& child, int k) {
     /// k - the value to be inserted
     /// parent - is the parent of the current node (firstly null)
@@ -69,7 +66,7 @@ node * findIterativelyInBST(node * p, int valueToFind) {
 }
 
 /// find the next node that will be visited by passing through in-order
-node * consequent(node * p) {
+node * findConsequentNode(node * p) {
 
     /// first possibility when node contains right subtree (son)
     if(p -> right != nullptr) {
@@ -87,6 +84,31 @@ node * consequent(node * p) {
     return q;
 }
 
+/// k'th smallest element to find
+/// assumed that tree isn't empty
+node * kthSmallest(node * p, int k, int &counter) {
+    /// p - firstly root
+    /// make this done by using in-order passing through the tree and keep counter
+    /// of number nodes that were came across until counter will equal to k
+    if(p == nullptr)
+        return nullptr;
+
+    node * leftSubtree = kthSmallest(p -> left, k, counter);
+    if(leftSubtree != nullptr) {
+        return leftSubtree;
+    }
+
+    if(++counter == k)
+        return p;
+
+    return kthSmallest(p -> right, k, counter);
+}
+
+node * findKthSmallestNode(node * p, int k) {
+    int counter = 0;
+    return kthSmallest(p,k,counter);
+}
+
 int main() {
     node * root = nullptr;
     int n;
@@ -99,8 +121,8 @@ int main() {
         insertToBST(nullptr, root, inputDate[i]);
     }
 
-    node * tmp = findRecursivelyInBST(root, 1);
-    if(tmp -> parent ->value == 4)
+    node * p = findKthSmallestNode(root, 9);
+    if(p -> value == 12)
         std::cout << "TAK TAK TAAK";
 
     return 0;
