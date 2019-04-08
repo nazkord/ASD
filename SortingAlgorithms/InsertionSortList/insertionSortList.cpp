@@ -18,14 +18,11 @@ void printOutList(node * first) {
 }
 
 void insertionToResult(node * &headOfResult, node * inserted) {
-
-
     /// option when we should insert before head
     if(headOfResult -> value >= inserted->value) {
         inserted -> next = headOfResult;
         headOfResult = inserted;
     } else {
-
         /// pointer for traversing through the list
         node *p = headOfResult;
         while (p->next != nullptr && p->next->value < inserted->value) {
@@ -35,7 +32,6 @@ void insertionToResult(node * &headOfResult, node * inserted) {
         inserted->next = p->next;
         p->next = inserted;
     }
-    //printOutList(head);
 }
 
 node * insertionSortList(node * head) {
