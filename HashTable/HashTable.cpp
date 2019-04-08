@@ -27,6 +27,14 @@ Person CreatePerson(std::string name, int age) {
     return person;
 }
 
+unsigned int functionNumerasing(std::string key) {
+    unsigned int sum = 0;
+    for(int i = 0; i < key.size(); i++) {
+        sum += key[i]<<(i%4)*8;
+    }
+    return sum;
+}
+
 double getFillingLevel() {
     return (double)elementInHashTable/N*100;
 }
@@ -73,7 +81,6 @@ void deleteFromHashTable(Person* HashTable, int size, int key) {
         hash = probingFunction(key,probe,size);
         probe++;
     } while(HashTable[hash].age != key && probe != size);
-
     //delete (rewrite) person from founded hash
     if(probe != size) {
         Person person;
