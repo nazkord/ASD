@@ -113,6 +113,11 @@ void deleteFromBST(node *& root, node * deletedNode) {
         delete deletedNode;
         return;
     }
+
+    ///third case: when node has two sons, then find successor and exchange them deleting successor from his place
+    node * toExchange = findConsequentNode(deletedNode);
+    deletedNode -> value = toExchange -> value;
+    deleteFromBST(root,toExchange);
 }
 
 
@@ -153,8 +158,8 @@ int main() {
     }
 
 
-    deleteFromBST(root, findRecursivelyInBST(root, 18));
-    if(findRecursivelyInBST(root,15) -> right -> value == 19)
+    deleteFromBST(root, findRecursivelyInBST(root, 9));
+    if(findRecursivelyInBST(root,10) -> left -> value == 5)
         std::cout << "TAK TAK TAAK";
 
     return 0;
