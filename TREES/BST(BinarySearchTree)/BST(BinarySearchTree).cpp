@@ -84,29 +84,60 @@ node * findConsequentNode(node * p) {
     return q;
 }
 
+void deleteFromBST(node *& root, node * deletedNode) {
+    /// first case: when node is leaf just remove his parent connection and himself
+    if(deletedNode -> left == nullptr && deletedNode -> right == nullptr) {
+        if(deletedNode -> parent -> left == deletedNode) {
+            deletedNode -> parent -> left = nullptr;
+        } else {
+            deletedNode -> parent -> right = nullptr;
+        }
+        delete deletedNode;
+        return;
+    }
+
+    /// second case: if node has only one child, delete him and make connection work again
+    node * sonNode = nullptr;
+    if(deletedNode -> left == nullptr) {
+        sonNode = deletedNode -> right;
+    } else if(deletedNode -> right == nullptr) {
+        sonNode = deletedNode -> left;
+    }
+
+    if(sonNode != nullptr) {
+        if(deletedNode -> parent -> left == deletedNode) {
+            deletedNode -> parent -> left = sonNode;
+        } else {
+            deletedNode -> parent -> right = sonNode;
+        }
+        delete deletedNode;
+        return;
+    }
+}
+
+
 /// k'th smallest element to find
 /// assumed that tree isn't empty
-node * kthSmallest(node * p, int k, int &counter) {
+node * kthSmallest(node *p, int &k) {
     /// p - firstly root
     /// make this done by using in-order passing through the tree and keep counter
     /// of number nodes that were came across until counter will equal to k
-    if(p == nullptr)
+    if (p == nullptr)
         return nullptr;
 
-    node * leftSubtree = kthSmallest(p -> left, k, counter);
-    if(leftSubtree != nullptr) {
+    node *leftSubtree = kthSmallest(p->left, k);
+    if (leftSubtree != nullptr) {
         return leftSubtree;
     }
 
-    if(++counter == k)
+    if(--k == 0)
         return p;
 
-    return kthSmallest(p -> right, k, counter);
+    return kthSmallest(p->right, k);
 }
 
-node * findKthSmallestNode(node * p, int k) {
-    int counter = 0;
-    return kthSmallest(p,k,counter);
+node * findKthSmallest(node * root, int k) {
+    return kthSmallest(root,k);
 }
 
 int main() {
@@ -121,8 +152,9 @@ int main() {
         insertToBST(nullptr, root, inputDate[i]);
     }
 
-    node * p = findKthSmallestNode(root, 9);
-    if(p -> value == 12)
+
+    deleteFromBST(root, findRecursivelyInBST(root, 18));
+    if(findRecursivelyInBST(root,15) -> right -> value == 19)
         std::cout << "TAK TAK TAAK";
 
     return 0;
