@@ -1,1 +1,3 @@
-Hashing program which use open adressing (Quadratic Probing) for collisions.
+**HashTable** is a program with console for the user which can add, find, delete elements in hashTable and has filling level up to date in order to not make complexity of those funtion O(n). Also has refactoring function which make new HashTable with the same data but doubled size. (Need to be improved). In addition, program use *open adressing (Quadratic Probing)* for collisions.
+
+**HashTable2** is a program which has add and check_if_exist functions only. Also has function which numerise key which provided as string, delete function which free merory of the whole HashTable at the end of the program. Important thing that HashTable2 using *Seperate Chaining* for collisions.

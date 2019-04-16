@@ -176,7 +176,6 @@ int main() {
     Person hashTable2[2*N];
     reHashing(hashTable,N,hashTable2,2*N);
     console(hashTable2,2*N);
-
-
+    
     return 0;
 }
