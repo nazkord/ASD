@@ -120,7 +120,6 @@ void deleteFromBST(node *& root, node * deletedNode) {
     deleteFromBST(root,toExchange);
 }
 
-
 /// k'th smallest element to find
 /// assumed that tree isn't empty
 node * kthSmallest(node *p, int &k) {
@@ -141,6 +140,27 @@ node * kthSmallest(node *p, int &k) {
     return kthSmallest(p->right, k);
 }
 
+/// the idea is to traverse through whole tree in order fashion and check whether
+/// elements are sorted in ascending way
+bool isBST(node * prev, node * p) {
+    if(p == nullptr)
+        return true;
+
+    /// left subTree
+    if(!isBST(prev,p->left))
+        return false;
+
+    /// node
+    if(prev != nullptr && p -> value < prev -> value)
+        return false;
+
+    /// after check change value of prev
+    prev = p;
+
+    /// right subTree
+    return (isBST(prev, p -> right));
+}
+
 node * findKthSmallest(node * root, int k) {
     return kthSmallest(root,k);
 }
@@ -156,6 +176,14 @@ int main() {
     for(int i = 0; i < n; i++) {
         insertToBST(nullptr, root, inputDate[i]);
     }
+
+    /// uncomment to check if the isBST function works
+    // root -> right -> value = 8;
+
+    if(isBST(root -> parent, root))
+        std::cout << "TAK TAAAK" << "\n";
+    else
+        std::cout << "NIE NIEEE" << "\n";
 
 
     deleteFromBST(root, findRecursivelyInBST(root, 9));
