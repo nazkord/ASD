@@ -7,7 +7,7 @@ int const N = 5;
 int const size = N*N;
 
 struct piece {
-    /// index of the beggining of the piece
+    /// index of the beginning of the piece
     int index;
 
     /// sum of this piece
