@@ -1,4 +1,4 @@
-Tresc
+**Tresc**
 Pewna firma przechowuje dużo iczb pierwszych w postaci binarnej jako stringi ”10101...”.
 Zaimplementuj strukturę danych Set do przechowywania tych danych. Napisz funkcje:
 Set createSet( string A[], int n ), która tworzy Set z n-elementowej tablicy stringów
