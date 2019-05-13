@@ -92,8 +92,56 @@ void deletefromSL(SkipList skipList, int valueToBeDeleted) {
     delete nodeToDelete;
 }
 
+int max(int x, int y) {return (x > y ? x : y);}
+
+SkipList mergeTwoSkipLists(SkipList S1, SkipList S2) {
+    /// create new skipList (empty)
+    int maxLevel = max(S1.maxlvl, S2.maxlvl);
+    SkipList S3 = SkipList();
+    S3.maxlvl = maxLevel;
+    S3.head = new SLnode();
+    S3.head -> next = new SLnode *[S3.maxlvl];
+    for(int lvl = 0; lvl < maxLevel; lvl ++) {
+        S3.head -> next[lvl] = nullptr;
+    }
+
+    SLnode* p1;
+    SLnode* p2;
+    int lvl = S3.maxlvl - 1;
+    for( ; lvl >= 0; lvl--) {
+        p1 = S1.head;
+        p2 = S2.head;
+        while(p1 -> next[lvl] != nullptr && p2 -> next[lvl] != nullptr) {
+            int value1 = p1->next[lvl]->value;
+            int value2 = p2->next[lvl]->value;
+            if (value1 > value2) {
+                insert(S3, value2);
+                p2 = p2->next[lvl];
+            } else {
+                insert(S3, value1);
+                p1 = p1->next[lvl];
+            }
+        }
+
+        if(p1 -> next[lvl] == nullptr) {
+            while(p2 -> next[lvl] != nullptr) {
+                insert(S3, p2 -> next[lvl] -> value);
+                p2 = p2 -> next[lvl];
+            }
+        } else if(p2 -> next[lvl] == nullptr) {
+            while(p1 -> next[lvl] != nullptr) {
+                insert(S3, p1 -> next[lvl] -> value);
+                p1 = p1 -> next[lvl];
+            }
+        }
+    }
+
+    return S3;
+}
+
 int main() {
 
+    /// first skipList
     int maxLevel = 5;
     SkipList S1 = SkipList();
     S1.maxlvl = maxLevel;
@@ -102,11 +150,10 @@ int main() {
     for(int lvl = 0; lvl < maxLevel; lvl ++) {
         S1.head -> next[lvl] = nullptr;
     }
-
     insert(S1, 1);
     insert(S1, 5);
 
-
+    /// second skipList
     SkipList S2 = SkipList();
     S2.maxlvl = maxLevel;
     S2.head = new SLnode();
@@ -118,18 +165,32 @@ int main() {
     insert(S2, 2);
     insert(S2, 3);
     insert(S2, 4);
+    insert(S2, 7);
 
-    SLnode * f1 = findSLnode(S2,3);
-    if(f1 == nullptr) {
-        std::cout << "DUPA";
+    std::cout << "Test of deleting and finding functions: " << "\n";
+    SLnode * node = findSLnode(S2,3);
+    if(node == nullptr) {
+        std::cout << "cos poszlo nie tak";
     } else {
-        std::cout << f1 -> value;
+        std::cout << node -> value << "\n";
     }
     deletefromSL(S2, 3);
-    f1 = findSLnode(S2,4);
-    if(f1 == nullptr) {
-        std::cout << "DUPA";
+    node = findSLnode(S2,3);
+    if(node == nullptr) {
+        std::cout << "3 doesn't exist";
     } else {
-        std::cout << f1 -> value;
+        std::cout << node -> value;
     }
+
+    std::cout << "\n" << "Test of merge function: " << "\n";
+    SkipList S3 = mergeTwoSkipLists(S1,S2);
+    /// result of merging is skipList contains: 1,2,4,5,7;
+
+    node = findSLnode(S3,8);
+    if(node == nullptr) {
+        std::cout << "cos poszlo nie tak";
+    } else {
+        std::cout << node -> value;
+    }
+
 }
