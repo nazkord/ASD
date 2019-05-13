@@ -1,3 +1,6 @@
+**disjoint_sets**
+Implementions of disjoint sets using tree with union by rank and path compression for better complexity.
+
 **Task 1:**
 Kapitan pewnego statku zastanawia się, czy może wpłynąć do portu mimo tego, że nastąpił
 odpływ. Do dyspozycji ma mapę zatoki w postaci tablicy:
