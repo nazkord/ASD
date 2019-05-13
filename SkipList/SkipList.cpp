@@ -13,13 +13,22 @@ struct SkipList {
     int maxlvl;
 };
 
-/// to random chose the high of node
+/// to random chose the height of node
 int getRandomHeight(int max_h) {
     srand(time(nullptr));
-    return rand()%max_h;
+    return rand() % max_h;
+}
+/// second function for random chose the height of node (in assumptions should be better)
+int getHeight(int max_h) {
+    srand(time(nullptr));
+    double p = 1/2;
+    int h = 1;
+    while (h < max_h && drand48() < p)
+        h++;
+    return h;
 }
 
-void insert(int valueToInsert, SkipList skipList) {
+void insert(SkipList skipList, int valueToInsert) {
     SLnode* p = skipList.head;
 
     /// create new node
@@ -29,7 +38,7 @@ void insert(int valueToInsert, SkipList skipList) {
     newNode -> next = new SLnode *[lvlOfNewNode];
 
     int lvl = skipList.maxlvl - 1;
-    /// find the last node which value is less than insertedNode's value (going down)
+    /// find the last node which value is less than insertedNode's value (by going down)
     for( ; lvl >= 0; lvl--) {
         while (p->next[lvl] != nullptr && p->next[lvl]->value < valueToInsert) {
             p = p -> next[lvl];
@@ -42,6 +51,24 @@ void insert(int valueToInsert, SkipList skipList) {
     }
 }
 
+SLnode * findSLnode(SkipList skipList, int valueToFind) {
+    SLnode * p = skipList.head;
+    int lvl = skipList.maxlvl - 1;
+    for( ; lvl >= 0; lvl--) {
+        while (p->next[lvl] != nullptr && p->next[lvl]->value < valueToFind) {
+            p = p->next[lvl];
+        }
+    }
+    /// node after p should be the node we are looking for
+    p = p -> next[0];
+
+    if(p -> value == valueToFind)
+        return p;
+    else
+        return nullptr;
+    /// if doesn't exist return null
+}
+
 int main() {
 
     int maxLevel = 5;
@@ -52,5 +79,26 @@ int main() {
     for(int lvl = 0; lvl < maxLevel; lvl ++) {
         S1.head -> next[lvl] = nullptr;
     }
+
+    insert(S1, 1);
+    insert(S1, 5);
+
+
+    SkipList S2 = SkipList();
+    S2.maxlvl = maxLevel;
+    S2.head = new SLnode();
+    S2.head -> next = new SLnode *[S2.maxlvl];
+    for(int lvl = 0; lvl < maxLevel; lvl ++) {
+        S2.head -> next[lvl] = nullptr;
+    }
+
+    insert(S2, 2);
+    insert(S2, 3);
+    insert(S2, 4);
+
+
+
+
+
 
 }
