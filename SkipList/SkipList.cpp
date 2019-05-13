@@ -62,11 +62,34 @@ SLnode * findSLnode(SkipList skipList, int valueToFind) {
     /// node after p should be the node we are looking for
     p = p -> next[0];
 
-    if(p -> value == valueToFind)
-        return p;
-    else
+    if(p != nullptr) {
+        if(p -> value == valueToFind)
+            return p;
+        else
+            return nullptr;
+    } else
         return nullptr;
     /// if doesn't exist return null
+}
+
+void deletefromSL(SkipList skipList, int valueToBeDeleted) {
+    SLnode * p = skipList.head;
+    SLnode * nodeToDelete;
+    int lvl = skipList.maxlvl - 1;
+    for( ; lvl >= 0; lvl--) {
+        while (p->next[lvl] != nullptr && p->next[lvl]->value < valueToBeDeleted) {
+            p = p->next[lvl];
+        }
+        if(p -> next[lvl] != nullptr && p -> next[lvl] -> value == valueToBeDeleted) {
+            nodeToDelete = p -> next[lvl];
+            p -> next[lvl] = nodeToDelete -> next[lvl];
+            nodeToDelete -> next[lvl] = nullptr;
+        }
+    }
+
+    /// if deleted value doesn't exist
+    if (p -> next[0]-> value != valueToBeDeleted) return;
+    delete nodeToDelete;
 }
 
 int main() {
@@ -96,9 +119,17 @@ int main() {
     insert(S2, 3);
     insert(S2, 4);
 
-
-
-
-
-
+    SLnode * f1 = findSLnode(S2,3);
+    if(f1 == nullptr) {
+        std::cout << "DUPA";
+    } else {
+        std::cout << f1 -> value;
+    }
+    deletefromSL(S2, 3);
+    f1 = findSLnode(S2,4);
+    if(f1 == nullptr) {
+        std::cout << "DUPA";
+    } else {
+        std::cout << f1 -> value;
+    }
 }
