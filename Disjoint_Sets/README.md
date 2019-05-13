@@ -9,6 +9,8 @@ wartość int T to statek może się tam znaleźć. Początkowo statek jest na p
 znajduje się na pozycji (n − 1, m − 1). Z danej pozycji statek może przepłynąć bezpośrednio
 jedynie na pozycję bezpośrednio obok (to znaczy, na pozycję, której dokładnie jedna ze
 współrzędnych różni się o jeden). Proszę napisać funkcję rozwiązującą problem kapitana.
+
+
 **Task 2:**
 Dana jest tablica:
 int n = ...
