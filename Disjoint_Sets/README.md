@@ -1,4 +1,4 @@
-**Task:**
+**Task 1:**
 Kapitan pewnego statku zastanawia się, czy może wpłynąć do portu mimo tego, że nastąpił
 odpływ. Do dyspozycji ma mapę zatoki w postaci tablicy:
 int n = ...
