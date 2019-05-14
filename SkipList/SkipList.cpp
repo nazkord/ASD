@@ -115,31 +115,46 @@ SkipList mergeTwoSkipLists(SkipList S1, SkipList S2) {
 
     SLnode* p1;
     SLnode* p2;
+    SLnode * tmp;
+    SLnode ** p3 = new SLnode*[maxLevel];
+    for(int i = 0; i < maxLevel; i++) {
+        p3[i] = S3.head;
+    }
+
     int lvl = S3.maxlvl - 1;
     for( ; lvl >= 0; lvl--) {
         p1 = S1.head;
         p2 = S2.head;
         while(p1 -> next[lvl] != nullptr && p2 -> next[lvl] != nullptr) {
-            int value1 = p1->next[lvl]->value;
-            int value2 = p2->next[lvl]->value;
-            if (value1 > value2) {
-                insert(S3, value2);
-                p2 = p2->next[lvl];
+            /// pin all the pointers
+            if (p1->next[lvl]->value > p2->next[lvl]->value) {
+                tmp = p2 -> next[lvl];
+                p2 -> next[lvl] = p2 -> next[lvl] -> next[lvl];
             } else {
-                insert(S3, value1);
-                p1 = p1->next[lvl];
+                tmp = p1 -> next[lvl];
+                p1 -> next[lvl] = p1 -> next[lvl] -> next[lvl];
             }
+            tmp -> next[lvl] = p3[lvl] -> next[lvl];
+            p3[lvl] -> next[lvl] = tmp;
+            p3[lvl] = tmp;
         }
 
+        /// if some of skipList end before another
         if(p1 -> next[lvl] == nullptr) {
-            while (p2->next[lvl] != nullptr) {
-                insert(S3, p2->next[lvl]->value);
-                p2 = p2->next[lvl];
+            while(p2 -> next[lvl] != nullptr) {
+                tmp = p2 -> next[lvl];
+                p2 -> next[lvl] = p2 -> next[lvl] -> next[lvl];
+                tmp -> next[lvl] = p3[lvl] -> next[lvl];
+                p3[lvl] -> next[lvl] = tmp;
+                p3[lvl] = tmp;
             }
         } else {
             while(p1 -> next[lvl] != nullptr) {
-                insert(S3, p1 -> next[lvl] -> value);
-                p1 = p1 -> next[lvl];
+                tmp = p1 -> next[lvl];
+                p1 -> next[lvl] = p1 -> next[lvl] -> next[lvl];
+                tmp -> next[lvl] = p3[lvl] -> next[lvl];
+                p3[lvl] -> next[lvl] = tmp;
+                p3[lvl] = tmp;
             }
         }
     }
@@ -208,7 +223,7 @@ int main() {
     printOutSkipList(S2);
     std::cout << "\n";
 
-    std::cout << "Test of deleting and finding functions: " << "\n";
+    /* std::cout << "Test of deleting and finding functions: " << "\n";
     SLnode * node = findSLnode(S2,3);
     if(node == nullptr) {
         std::cout << "cos poszlo nie tak";
@@ -221,19 +236,9 @@ int main() {
         std::cout << "3 doesn't exist";
     } else {
         std::cout << node -> value;
-    }
+    } */
 
-    std::cout << "\n" << "Test of merge function: " << "\n";
     SkipList S3 = mergeTwoSkipLists(S1,S2);
-    /// result of merging is skipList contains: 1,2,4,5,7;
-
-    node = findSLnode(S3,9);
-    if(node == nullptr) {
-        std::cout << "cos poszlo nie tak";
-    } else {
-        std::cout << node -> value;
-    }
-    std::cout << "\n";
 
     std::cout << "third skipList after merging" << "\n";
     printOutSkipList(S3);
@@ -241,9 +246,9 @@ int main() {
 
     deleteFromInterval(S3, 0, 6);
 
-    std::cout << "third skipList after deleting elements in interval (4;6)" << "\n";
+    std::cout << "third skipList after deleting elements in interval (0;6)" << "\n";
     printOutSkipList(S3);
     std::cout << "\n";
 
-    // #TODO: make function init
+    // #TODO: make function init for skipList
 }
