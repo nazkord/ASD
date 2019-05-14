@@ -13,6 +13,14 @@ struct SkipList {
     int maxlvl;
 };
 
+void printOutSkipList(SkipList skipList) {
+    SLnode * p = skipList.head;
+    while(p -> next[0] != nullptr) {
+        std::cout << p -> next[0] -> value << " ";
+        p = p -> next[0];
+    }
+}
+
 /// to random chose the height of node
 int getRandomHeight(int max_h) {
     srand(time(nullptr));
@@ -124,11 +132,11 @@ SkipList mergeTwoSkipLists(SkipList S1, SkipList S2) {
         }
 
         if(p1 -> next[lvl] == nullptr) {
-            while(p2 -> next[lvl] != nullptr) {
-                insert(S3, p2 -> next[lvl] -> value);
-                p2 = p2 -> next[lvl];
+            while (p2->next[lvl] != nullptr) {
+                insert(S3, p2->next[lvl]->value);
+                p2 = p2->next[lvl];
             }
-        } else if(p2 -> next[lvl] == nullptr) {
+        } else {
             while(p1 -> next[lvl] != nullptr) {
                 insert(S3, p1 -> next[lvl] -> value);
                 p1 = p1 -> next[lvl];
@@ -137,6 +145,29 @@ SkipList mergeTwoSkipLists(SkipList S1, SkipList S2) {
     }
 
     return S3;
+}
+
+void deleteFromInterval(SkipList skipList, int x, int y) {
+    SLnode * beforeInterval = skipList.head;
+    SLnode * afterInterval = nullptr;
+
+    int lvl = skipList.maxlvl - 1;
+    for( ; lvl >= 0; lvl--) {
+        while(beforeInterval -> next[lvl] != nullptr &&
+                !(beforeInterval -> next[lvl] -> value < y && beforeInterval -> next[lvl] -> value > x))
+            beforeInterval = beforeInterval -> next[lvl];
+
+        /// in case the next node is after the whole interval
+        if(beforeInterval -> next[lvl] == nullptr || beforeInterval -> next[lvl] -> value > y)
+            continue;
+
+        afterInterval = beforeInterval;
+        while(afterInterval -> next[lvl] != nullptr && afterInterval -> next[lvl] -> value < y)
+            afterInterval = afterInterval -> next[lvl];
+
+        /// pin pointers
+        beforeInterval -> next[lvl] = afterInterval -> next[lvl];
+    }
 }
 
 int main() {
@@ -152,6 +183,12 @@ int main() {
     }
     insert(S1, 1);
     insert(S1, 5);
+    insert(S1, 6);
+    insert(S1, 9);
+
+    std::cout << "first skipList" << "\n";
+    printOutSkipList(S1);
+    std::cout << "\n";
 
     /// second skipList
     SkipList S2 = SkipList();
@@ -166,6 +203,10 @@ int main() {
     insert(S2, 3);
     insert(S2, 4);
     insert(S2, 7);
+
+    std::cout << "second skipList" << "\n";
+    printOutSkipList(S2);
+    std::cout << "\n";
 
     std::cout << "Test of deleting and finding functions: " << "\n";
     SLnode * node = findSLnode(S2,3);
@@ -186,11 +227,23 @@ int main() {
     SkipList S3 = mergeTwoSkipLists(S1,S2);
     /// result of merging is skipList contains: 1,2,4,5,7;
 
-    node = findSLnode(S3,8);
+    node = findSLnode(S3,9);
     if(node == nullptr) {
         std::cout << "cos poszlo nie tak";
     } else {
         std::cout << node -> value;
     }
+    std::cout << "\n";
 
+    std::cout << "third skipList after merging" << "\n";
+    printOutSkipList(S3);
+    std::cout << "\n";
+
+    deleteFromInterval(S3, 0, 6);
+
+    std::cout << "third skipList after deleting elements in interval (4;6)" << "\n";
+    printOutSkipList(S3);
+    std::cout << "\n";
+
+    // #TODO: make function init
 }
