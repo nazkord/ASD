@@ -17,6 +17,7 @@ struct Vertex {
     int id;
     Color color;
     int distance;
+    Vertex * parent;
 };
 
 struct Graph {
@@ -36,6 +37,7 @@ Vertex * vertexInit(int id) {
     newVertex -> id = id;
     newVertex -> color = white;
     newVertex -> distance = 0;
+    newVertex -> parent = nullptr;
     return newVertex;
 }
 
@@ -66,6 +68,7 @@ Graph * graphInit() {
                 p = new node;
                 p -> id = x;
                 p -> next = nullptr;
+                graph1 -> adjacent[i]->neighbours = p;
             }
         }
     }
@@ -73,17 +76,39 @@ Graph * graphInit() {
     return graph1;
 }
 
-void BFS(Graph graph, Vertex beginVertex) {
-    std::queue<Vertex> queueOfVertex;
+void BFS(Graph * graph, Vertex * beginVertex) {
+    std::queue<Vertex*> queueOfVertex;
+    Vertex * u;
+    Vertex * v;
 
+    beginVertex -> color = gray;
+    queueOfVertex.push(beginVertex);
 
+    while(!queueOfVertex.empty()) {
 
+        v = queueOfVertex.front();
+        queueOfVertex.pop();
+
+        node * temp = graph -> adjacent[v -> id] -> neighbours;
+        while(temp != nullptr) {
+            u = graph -> adjacent[temp -> id];
+            if(u -> color == white) {
+                u -> color = gray;
+                u -> parent = v;
+                u -> distance = v -> distance + 1;
+                queueOfVertex.push(u);
+            }
+            temp = temp -> next;
+        }
+        std::cout << " " << v -> id;
+        v -> color = black;
+    }
 }
 
 int main() {
 
     Graph * mainGraph = graphInit();
-
+    BFS(mainGraph, mainGraph -> adjacent[0]);
 
     return 0;
 }
