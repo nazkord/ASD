@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 struct node { /// for neighboring list
     int id;
@@ -11,14 +12,15 @@ enum Color {
     black /// for visited vertex
 };
 
-struct vertex {
+struct Vertex {
     node * neighbours; /// list with neighboring vertex (as node for decreasing memory cache)
     int id;
     Color color;
+    int distance;
 };
 
-struct graph {
-    vertex ** adjacent;
+struct Graph {
+    Vertex ** adjacent;
     int size;
 };
 
@@ -29,21 +31,28 @@ void insertToEndOfList(node * tail, int valueToInserted) {
     tail -> next = newNode;
 }
 
-graph * graphInit() {
-    graph * graph1 = new graph;
+Vertex * vertexInit(int id) {
+    Vertex * newVertex = new Vertex;
+    newVertex -> id = id;
+    newVertex -> color = white;
+    newVertex -> distance = 0;
+    return newVertex;
+}
+
+Graph * graphInit() {
+    Graph * graph1 = new Graph;
     int x = 0;
 
-    std::cout << "Enter number of vertex in graph: ";
+    std::cout << "Enter number of Vertex in Graph: ";
     std::cin >> graph1 -> size;
-    graph1 -> adjacent = new vertex *[graph1->size];
+    graph1 -> adjacent = new Vertex *[graph1->size];
 
     for(int i = 0; i < graph1->size; i++) {
-        graph1 -> adjacent[i] = new vertex;
-        graph1 -> adjacent[i] -> id = i;
-        graph1 -> adjacent[i] -> color = white;
+        graph1 -> adjacent[i] = vertexInit(i);
+
         node * p = graph1 -> adjacent[i]->neighbours = nullptr;
 
-        std::cout << "Enter the neighbor of vertex (end with -1) " << i << ": ";
+        std::cout << "Enter the neighbor of Vertex (end with -1) " << i << ": ";
         while(true) {
             std::cin >> x;
             if(x == -1)
@@ -64,9 +73,16 @@ graph * graphInit() {
     return graph1;
 }
 
+void BFS(Graph graph, Vertex beginVertex) {
+    std::queue<Vertex> queueOfVertex;
+
+
+
+}
+
 int main() {
 
-    graph * mainGraph = graphInit();
+    Graph * mainGraph = graphInit();
 
 
     return 0;
