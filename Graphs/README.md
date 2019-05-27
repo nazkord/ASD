@@ -6,7 +6,7 @@
  
  
  Dijkstry is algorithm for finding the shortest paths between one node in a graph, and every other.
- @see <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstry algorithm</a> 
+ @see <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstry algorithm (Wikipedia)</a> 
 
  **Dijsktry** file implements this algorithm with n^2 complexity using two additional array of visited nodes 
  and with distance of all nodes.
