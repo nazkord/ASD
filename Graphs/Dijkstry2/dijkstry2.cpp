@@ -19,7 +19,41 @@ struct Graph {
     int size;
 };
 
-Vertex *findMin(Graph *pGraph, bool *pBoolean);
+void swap(Vertex * T[], int a, int b) {
+    Vertex * temp = T[b-1];
+    T[b-1] = T[a-1];
+    T[a-1] = temp;
+}
+
+//Wrzuca element o indeksie i na swoje prawidlowe miejsce na dole
+//aby kopiec o korzeniu i byl kopcem typu max
+void minHeapify(Vertex * T[], int heapSize, int i) {
+    if(i > heapSize/2)
+        return;
+
+    int l = 2*i;
+    int r = 2*i + 1;
+    int smallest = i;
+    if(l <= heapSize && T[l-1]->distance < T[smallest-1]->distance)
+        smallest = l;
+    if(r <= heapSize && T[r-1]->distance < T[smallest-1]->distance)
+        smallest = r;
+    if(smallest != i) {
+        swap(T,i,smallest);
+        minHeapify(T,heapSize,smallest);
+    } else
+        return;
+}
+
+//Tworze kopiec typu min, robiac | poczawszy od ostatniego elemenetu,
+//ktory nie jest lisciem (N/2) | minHeapify | az do korzenia calego kopca
+
+//Czyli uporzadkowuje caly kopiec, aby byl typem max
+void buildMinHeap(Vertex * T[], int heapSize) {
+    for(int i = heapSize/2; i > 0; i--) {
+        minHeapify(T,heapSize,i);
+    }
+}
 
 void insertToEndOfList(node * tail, int valueToInserted, int weight) {
     node * newNode = new node;
@@ -53,9 +87,10 @@ Graph * graphInit() {
 
         std::cout << "Enter the neighbor of Vertex and the weight of edge (end with -1) " << i << ": ";
         while(true) {
-            std::cin >> x >> weight;
+            std::cin >> x;
             if(x == -1)
                 break;
+            std::cin >> weight;
 
             if(p != nullptr) {
                 insertToEndOfList(p, x, weight);
@@ -74,10 +109,7 @@ Graph * graphInit() {
     return graph1;
 }
 
-void Dijkstry(Graph * graph, Vertex * beginVertex) { /// size of distance array is equal to amount of vertex in graph
-
-    bool * visited = new bool[graph->size];
-    for(int i = 0; i < graph->size; i++) visited[i] = false;
+void Dijkstry2(Graph * graph, Vertex * beginVertex, Vertex * heapVertex[], int heapSize) { /// size of distance array is equal to amount of vertex in graph
 
     Vertex * u;
     Vertex * v;
@@ -85,10 +117,15 @@ void Dijkstry(Graph * graph, Vertex * beginVertex) { /// size of distance array 
 
     for(int i = 0; i < graph->size; i++) {
 
-        u = findMin(graph, visited); /// find the smallest one unvisited node
-        if(u == nullptr)
+        buildMinHeap(heapVertex,heapSize); /// find the smallest one unvisited node (buildMinHeap)
+        u = heapVertex[0]; /// get the first element (the smallest one after building minHeap)
+
+        if(heapSize == 0)
             break;
-        visited[u->id] = true;
+
+        swap(heapVertex,1,heapSize);
+        heapSize--;
+        minHeapify(heapVertex,heapSize,1);
 
         node * temp = graph -> adjacent[u->id] -> neighbours;
         while(temp != nullptr) {
@@ -102,35 +139,21 @@ void Dijkstry(Graph * graph, Vertex * beginVertex) { /// size of distance array 
     }
 }
 
-bool isMinInGraph(Graph * graph, int idVertex, bool visited[]) {
-    Vertex * suspectVertex = graph->adjacent[idVertex];
-    int suspectDistance = suspectVertex->distance;
-    for(int i = 0; i < graph->size; i++) {
-        if(!visited[i] && graph->adjacent[i]->distance < suspectDistance)
-            return false;
-    }
-    return true;
-}
-
-Vertex *findMin(Graph * graph, bool visited[]) {
-    for(int i = 0; i < graph->size; i++) {
-        if(!visited[i]) {
-            if(isMinInGraph(graph,i,visited)) return graph->adjacent[i];
-        }
-    }
-    return nullptr;
-}
-
-
 int main() {
     Graph * mainGraph = graphInit();
-    for(int i = 0; i < mainGraph->size; i++) {
-        mainGraph->adjacent[i]->distance = INT_MAX;
-    }
-    Dijkstry(mainGraph, mainGraph -> adjacent[0]);
+
+    Vertex ** heapVertex = new Vertex*[mainGraph->size];
 
     for(int i = 0; i < mainGraph->size; i++) {
-        std::cout << mainGraph->adjacent[i]->distance << " ";
+        mainGraph->adjacent[i]->distance = INT_MAX;
+        heapVertex[i] = mainGraph->adjacent[i];
+    }
+
+    Dijkstry2(mainGraph, mainGraph -> adjacent[0], heapVertex, mainGraph->size);
+
+    for(int i = 0; i < mainGraph->size; i++) {
+        std::cout << heapVertex[i]->distance << " ";
+        // or -> std::cout << mainGraph->adjacent[i]->distance << " ";
     }
 
     return 0;
