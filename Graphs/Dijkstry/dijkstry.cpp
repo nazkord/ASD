@@ -19,7 +19,24 @@ struct Graph {
     int size;
 };
 
-Vertex *findMin(Graph *pGraph, bool *pBoolean);
+bool isMinInGraph(Graph * graph, int idVertex, bool visited[]) {
+    Vertex * suspectVertex = graph->adjacent[idVertex];
+    int suspectDistance = suspectVertex->distance;
+    for(int i = 0; i < graph->size; i++) {
+        if(!visited[i] && graph->adjacent[i]->distance < suspectDistance)
+            return false;
+    }
+    return true;
+}
+
+Vertex *findMin(Graph * graph, bool visited[]) {
+    for(int i = 0; i < graph->size; i++) {
+        if(!visited[i]) {
+            if(isMinInGraph(graph,i,visited)) return graph->adjacent[i];
+        }
+    }
+    return nullptr;
+}
 
 void insertToEndOfList(node * tail, int valueToInserted, int weight) {
     node * newNode = new node;
@@ -101,26 +118,6 @@ void Dijkstry(Graph * graph, Vertex * beginVertex) { /// size of distance array 
         }
     }
 }
-
-bool isMinInGraph(Graph * graph, int idVertex, bool visited[]) {
-    Vertex * suspectVertex = graph->adjacent[idVertex];
-    int suspectDistance = suspectVertex->distance;
-    for(int i = 0; i < graph->size; i++) {
-        if(!visited[i] && graph->adjacent[i]->distance < suspectDistance)
-            return false;
-    }
-    return true;
-}
-
-Vertex *findMin(Graph * graph, bool visited[]) {
-    for(int i = 0; i < graph->size; i++) {
-        if(!visited[i]) {
-            if(isMinInGraph(graph,i,visited)) return graph->adjacent[i];
-        }
-    }
-    return nullptr;
-}
-
 
 int main() {
     Graph * mainGraph = graphInit();
