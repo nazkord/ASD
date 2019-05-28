@@ -139,6 +139,15 @@ void Dijkstry2(Graph * graph, Vertex * beginVertex, Vertex * heapVertex[], int h
     }
 }
 
+void findPath(Vertex * beginVertex, Vertex * endVertex) {
+    Vertex * temp = endVertex;
+    while(temp != beginVertex) {
+        std::cout << temp -> id << " ";
+        temp = temp -> parent;
+    }
+    std::cout << temp -> id;
+}
+
 int main() {
     Graph * mainGraph = graphInit();
 
@@ -155,6 +164,8 @@ int main() {
         std::cout << heapVertex[i]->distance << " ";
         // or -> std::cout << mainGraph->adjacent[i]->distance << " ";
     }
+
+    findPath(mainGraph -> adjacent[0], mainGraph -> adjacent[3]);
 
     return 0;
 }
