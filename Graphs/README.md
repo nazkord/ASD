@@ -14,4 +14,6 @@
  **Dijkstry2** file implements this algorithm with nlogn complexity in worst case using heap 
  (dynamic array with pointer to Vertex from mainGraph) as priority queue of Vertex with additional attribute -> distance.
  
+ **Dijkstry3** file implements this algorithm with nlogn complexity in worst case using normal priority queue and some interesting c++ library such as pair or vector.
+ 
  
