@@ -3,4 +3,4 @@ Here I'll drop some cool tasks from ASD (Algorithms and Data Structures). ASD is
 Those tasks mainly based on different sorting algorithms, trees and graphs. 
 Don't judge my code, some of tasks are made just because of my curiosity "))
 
-In each folder, there are many task with **description** and in the code there are **comments** to facilitate undestanding of the code.
+In each folder, there are many task with **description** and in the code there are **comments** to facilitate undestanding of the solution.
